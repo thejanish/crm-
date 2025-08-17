@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Consultant CRM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-container {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .form-container input, .form-container button {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .form-container button {
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background: #0056b3;
+    }
+    .clients {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      color: #007bff;
+    }
+    .card p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Tax Consultant CRM</h1>
+
+  <!-- Add Client Form -->
+  <div class="form-container">
+    <input type="text" id="name" placeholder="Client Name">
+    <input type="text" id="pan" placeholder="PAN Number">
+    <input type="text" id="type" placeholder="Type (Individual/Business)">
+    <input type="text" id="status" placeholder="Status (Pending/Filed)">
+    <button onclick="addClient()">Add Client</button>
+  </div>
+
+  <!-- Clients List -->
+  <div class="clients" id="clientsList"></div>
+
+  <script>
+    let clients = JSON.parse(localStorage.getItem("clients")) || [
+      { name: "Arun Kumar", pan: "ABCDE1234F", type: "Individual", status: "Pending ITR" },
+      { name: "Sundar Traders", pan: "XYZPQ6789L", type: "Business", status: "Filed GST" }
+    ];
+
+    function renderClients() {
+      const container = document.getElementById("clientsList");
+      container.innerHTML = "";
+      clients.forEach((client, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${client.name}</h3>
+          <p>🆔 PAN: ${client.pan}</p>
+          <p>👤 Type: ${client.type}</p>
+          <p>📌 Status: ${client.status}</p>
+          <button onclick="deleteClient(${index})" style="margin-top:10px; padding:5px 10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">❌ Delete</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addClient() {
+      const name = document.getElementById("name").value.trim();
+      const pan = document.getElementById("pan").value.trim();
+      const type = document.getElementById("type").value.trim();
+      const status = document.getElementById("status").value.trim();
+
+      if (name && pan && type && status) {
+        clients.push({ name, pan, type, status });
+        localStorage.setItem("clients", JSON.stringify(clients));
+        renderClients();
+
+        // Clear form
+        document.getElementById("name").value = "";
+        document.getElementById("pan").value = "";
+        document.getElementById("type").value = "";
+        document.getElementById("status").value = "";
+      } else {
+        alert("Please fill all fields!");
+      }
+    }
+
+    function deleteClient(index) {
+      clients.splice(index, 1);
+      localStorage.setItem("clients", JSON.stringify(clients));
+      renderClients();
+    }
+
+    // Initial render
+    renderClients();
+  </script>
+
+</body>
+</html>
